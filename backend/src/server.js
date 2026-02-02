@@ -1,4 +1,4 @@
-require("dotenv").config();   // MUST be first line
+require("dotenv").config();
 
 const app = require("./app");
 const http = require("http");
@@ -9,7 +9,10 @@ connectDB();
 
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: { origin: "*" },
+  cors: {
+    origin: "https://video-platform.vercel.app",
+    methods: ["GET", "POST"],
+  },
 });
 
 app.use((req, res, next) => {

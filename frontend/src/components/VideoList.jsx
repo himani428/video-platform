@@ -3,7 +3,8 @@ import axios from "axios";
 import io from "socket.io-client";
 import { AuthContext } from "../context/AuthContext";
 
-const socket = io("https://video-platform-backend.onrender.com");
+const API_URL = "https://video-platform-d68z.onrender.com";
+const socket = io(API_URL);
 
 export default function VideoList({ refresh }) {
   const { token, role } = useContext(AuthContext);
@@ -26,13 +27,29 @@ export default function VideoList({ refresh }) {
   }, []);
 
   const fetchVideos = async () => {
-    const res = await axios.get("https://video-platform-backend.onrender.com/api/videos", {
+    const res = await axios.get(`${API_URL}/api/videos`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     setVideos(res.data);
   };
 
-  /* ================= EMPTY STATE ================= */
+  const deleteVideo = async (id) => {
+    await axios.delete(`${API_URL}/api/videos/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    fetchVideos();
+  };
+
+  const renameVideo = async (id) => {
+    await axios.patch(
+      `${API_URL}/api/videos/${id}`,
+      { filename: newName },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    setEditingId(null);
+    fetchVideos();
+  };
+
   if (videos.length === 0) {
     return (
       <div className="empty-state">
@@ -46,7 +63,6 @@ export default function VideoList({ refresh }) {
     );
   }
 
-  /* ================= VIDEO LIST ================= */
   return (
     <div className="video-list">
       {videos.map((video) => {
@@ -91,7 +107,7 @@ export default function VideoList({ refresh }) {
                 {open && (
                   <video controls preload="metadata">
                     <source
-                      src={`https://video-platform-d68z.onrender.com/api/videos/stream/${video._id}`}
+                      src={`${API_URL}/api/videos/stream/${video._id}`}
                       type="video/mp4"
                     />
                   </video>
@@ -109,7 +125,9 @@ export default function VideoList({ refresh }) {
                 >
                   Rename
                 </button>
-                <button onClick={() => deleteVideo(video._id)}>Delete</button>
+                <button onClick={() => deleteVideo(video._id)}>
+                  Delete
+                </button>
               </div>
             )}
           </div>

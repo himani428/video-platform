@@ -2,6 +2,8 @@ import axios from "axios";
 import { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 
+const API_URL = "https://video-platform-d68z.onrender.com";
+
 export default function Upload({ onUpload }) {
   const { token } = useContext(AuthContext);
   const [uploading, setUploading] = useState(false);
@@ -13,14 +15,21 @@ export default function Upload({ onUpload }) {
     const formData = new FormData();
     formData.append("video", file);
 
-    setUploading(true);
-    await axios.post("https://video-platform-d68z.onrender.com/api/videos", formData, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    try {
+      setUploading(true);
 
-    setUploading(false);
-    e.target.value = "";
-    onUpload();
+      await axios.post(`${API_URL}/api/videos`, formData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      onUpload(); // 🔥 refresh list immediately
+    } catch (err) {
+      console.error("Upload failed:", err);
+      alert("Upload failed — check console");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
   };
 
   return (

@@ -20,12 +20,10 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Only Editor/Admin can upload */}
       {(role === "admin" || role === "editor") && (
         <Upload onUpload={() => setRefresh((p) => !p)} />
       )}
 
-      {/* Viewer must still see VideoList */}
       <VideoList refresh={refresh} />
     </div>
   );
