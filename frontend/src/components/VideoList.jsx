@@ -3,7 +3,7 @@ import axios from "axios";
 import io from "socket.io-client";
 import { AuthContext } from "../context/AuthContext";
 
-const socket = io("http://localhost:5000");
+const socket = io("https://video-platform-backend.onrender.com");
 
 export default function VideoList({ refresh }) {
   const { token, role } = useContext(AuthContext);
@@ -26,7 +26,7 @@ export default function VideoList({ refresh }) {
   }, []);
 
   const fetchVideos = async () => {
-    const res = await axios.get("http://localhost:5000/api/videos", {
+    const res = await axios.get("https://video-platform-backend.onrender.com/api/videos", {
       headers: { Authorization: `Bearer ${token}` },
     });
     setVideos(res.data);
