@@ -12,10 +12,12 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: [
-      "https://video-platform-muadoltep-himani428s-projects.vercel.app",
+      "https://video-platform-murex.vercel.app",
+      "https://video-platform-git-main-himani428s-projects.vercel.app",
+      "https://video-platform-ne0570xg4-himani428s-projects.vercel.app",
       "http://localhost:5173"
     ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
   },
 });
