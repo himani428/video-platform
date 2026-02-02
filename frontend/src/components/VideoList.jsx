@@ -91,7 +91,7 @@ export default function VideoList({ refresh }) {
                 {open && (
                   <video controls preload="metadata">
                     <source
-                      src={`http://localhost:5000/api/videos/stream/${video._id}`}
+                      src={`https://video-platform-d68z.onrender.com/api/videos/stream/${video._id}`}
                       type="video/mp4"
                     />
                   </video>

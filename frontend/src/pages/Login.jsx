@@ -10,7 +10,7 @@ export default function Login({ switchToRegister }) {
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
+      const res = await axios.post("https://video-platform-d68z.onrender.com/api/auth/login", {
         email,
         password,
       });

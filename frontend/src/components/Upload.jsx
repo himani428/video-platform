@@ -14,7 +14,7 @@ export default function Upload({ onUpload }) {
     formData.append("video", file);
 
     setUploading(true);
-    await axios.post("http://localhost:5000/api/videos", formData, {
+    await axios.post("https://video-platform-d68z.onrender.com/api/videos", formData, {
       headers: { Authorization: `Bearer ${token}` },
     });
 

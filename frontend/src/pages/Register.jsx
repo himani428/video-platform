@@ -8,7 +8,7 @@ export default function Register({ switchToLogin }) {
   const [success, setSuccess] = useState("");
 
   const register = async () => {
-    await axios.post("http://localhost:5000/api/auth/register", {
+    await axios.post("https://video-platform-d68z.onrender.com/api/auth/register", {
       email,
       password,
       role,
