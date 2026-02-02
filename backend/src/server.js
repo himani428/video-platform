@@ -8,10 +8,15 @@ const connectDB = require("./config/db");
 connectDB();
 
 const server = http.createServer(app);
+
 const io = new Server(server, {
   cors: {
-    origin: "https://video-platform.vercel.app",
-    methods: ["GET", "POST"],
+    origin: [
+      "https://video-platform-muadoltep-himani428s-projects.vercel.app",
+      "http://localhost:5173"
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
   },
 });
 
@@ -23,6 +28,8 @@ app.use((req, res, next) => {
 app.use("/api/auth", require("./routes/auth.routes"));
 app.use("/api/videos", require("./routes/video.routes"));
 
-server.listen(process.env.PORT, () =>
-  console.log(`Backend running on ${process.env.PORT}`)
+const PORT = process.env.PORT || 5000;
+
+server.listen(PORT, () =>
+  console.log(`Backend running on ${PORT}`)
 );

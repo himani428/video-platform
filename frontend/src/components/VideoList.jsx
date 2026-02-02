@@ -4,7 +4,12 @@ import io from "socket.io-client";
 import { AuthContext } from "../context/AuthContext";
 
 const API_URL = "https://video-platform-d68z.onrender.com";
-const socket = io(API_URL);
+
+// IMPORTANT: force websocket + polling (Render friendly)
+const socket = io(API_URL, {
+  transports: ["websocket", "polling"],
+  withCredentials: true,
+});
 
 export default function VideoList({ refresh }) {
   const { token, role } = useContext(AuthContext);
@@ -14,23 +19,36 @@ export default function VideoList({ refresh }) {
   const [editingId, setEditingId] = useState(null);
   const [newName, setNewName] = useState("");
 
+  // Fetch videos whenever upload happens
   useEffect(() => {
     fetchVideos();
   }, [refresh]);
 
+  // Listen for real-time progress
   useEffect(() => {
     socket.on("progress", ({ videoId, progress }) => {
       setProgress((p) => ({ ...p, [videoId]: progress }));
     });
 
-    return () => socket.off("progress");
+    socket.on("processing-done", () => {
+      fetchVideos(); // refresh automatically when backend finishes
+    });
+
+    return () => {
+      socket.off("progress");
+      socket.off("processing-done");
+    };
   }, []);
 
   const fetchVideos = async () => {
-    const res = await axios.get(`${API_URL}/api/videos`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    setVideos(res.data);
+    try {
+      const res = await axios.get(`${API_URL}/api/videos`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setVideos(res.data);
+    } catch (err) {
+      console.error("Error fetching videos:", err);
+    }
   };
 
   const deleteVideo = async (id) => {
@@ -55,7 +73,7 @@ export default function VideoList({ refresh }) {
       <div className="empty-state">
         <h3>No videos available</h3>
         {role === "viewer" ? (
-          <p>You don’t have access to any videos yet.</p>
+          <p>You can view videos when assigned.</p>
         ) : (
           <p>Upload your first video to get started.</p>
         )}
